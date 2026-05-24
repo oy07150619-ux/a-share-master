@@ -816,42 +816,26 @@ python scripts/html_ppt.py --template templates/report_template.html --data data
 | **Windows** | ✅ 通过WSL2 | 最佳体验，也可用原生Python |
 | **Windows (原生)** | ✅ 支持 | 命令用 `python` 而非 `python3` |
 
-### 一键安装
+### 一键安装（从GitHub）
 
-**Linux (Ubuntu/Debian)**
+克隆仓库到 OpenClaw skill 目录：
 ```bash
-# 确保Python3和pip
-sudo apt update && sudo apt install -y python3 python3-pip
-python -m pip install --upgrade pip
+git clone https://github.com/oy07150619-ux/a-share-master.git ~/.openclaw/workspace/skills/a-share-master
 ```
+> 如果还没有安装 OpenClaw，先执行一键安装：
+> - **Linux/macOS**: `curl -fsSL https://openclaw.ai/install.sh | bash`
+> - **Windows (PowerShell)**: `iwr -useb https://openclaw.ai/install.ps1 | iex`
+> - 然后 `openclaw onboard --install-daemon` 完成初始化
 
-**macOS**
-```bash
-# 安装Homebrew（如没有）
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+### 系统需求
+| 系统 | 支持情况 | 说明 |
+|------|---------|------|
+| **Linux** (Ubuntu/Debian) | ✅ 原生支持 | 推荐，开箱即用 |
+| **macOS** | ✅ 原生支持 | 需安装Homebrew + Python3 |
+| **Windows** | ✅ 通过WSL2 | 最佳体验，也可用原生Python |
+| **Windows (原生)** | ✅ 支持 | 命令用 `python` 而非 `python3` |
 
-# 安装Python
-brew install python
-python -m pip install --upgrade pip
-```
-
-**Windows (WSL2 — 推荐)**
-```powershell
-# 在PowerShell(管理员)中安装WSL2
-wsl --install -d Ubuntu
-
-# 进入WSL2后执行Linux安装步骤
-```
-
-**Windows (原生 — 无需WSL)**
-```powershell
-# 1. 从 python.org 下载安装 Python 3.10+
-# 2. 安装时勾选 "Add Python to PATH"
-# 3. 检查安装
-python --version
-```
-
-### Python依赖安装
+### 依赖安装
 本工具仅使用Python标准库，**无需额外pip包**。
 所有依赖（json、sys、os、subprocess等）均为Python 3内置模块。
 
