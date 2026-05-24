@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>【A股综研】{报告标题}</title>
+<style>
+  /* ========== Reset & Base ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    font-size: 14px; color: #1a1a2e; background: #0f0f23;
+    overflow: hidden; -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
+  }
+  :root {
+    --bg-main: #0f0f23;
+    --bg-card: #1a1a2e;
+    --bg-card2: #16213e;
+    --bg-slide: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    --accent: #e94560;
+    --accent2: #0f3460;
+    --accent3: #533483;
+    --green: #00b894;
+    --red: #e17055;
+    --yellow: #fdcb6e;
+    --text-primary: #eee;
+    --text-secondary: #a8a8b3;
+    --text-muted: #636e72;
+    --border: #2d2d44;
+  }
+
+  /* ========== App Container ========== */
+  .app {
+    width: 100%; height: 100%;
+    position: relative; overflow: hidden;
+    background: var(--bg-slide);
+  }
+
+  /* ========== Page Indicator ========== */
+  .page-indicator {
+    position: fixed; top: 12px; right: 16px;
+    z-index: 100; background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 12px; color: var(--text-secondary);
+    letter-spacing: 1px;
+  }
+
+  /* ========== Slides Container ========== */
+  .slides {
+    width: 100%; height: 100%;
+    display: flex; flex-wrap: nowrap;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  /* ========== Slide ========== */
+  .slide {
+    min-width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    padding: 50px 20px 70px;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    -webkit-overflow-scrolling: touch;
+  }
+  .slide::-webkit-scrollbar { width: 4px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ========== Typography ========== */
+  .slide-title {
+    font-size: 20px; font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--accent);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .slide-title .icon { font-size: 22px; }
+  .slide-subtitle {
+    font-size: 15px; font-weight: 700;
+    color: var(--accent); margin: 14px 0 8px;
+  }
+  .slide-text {
+    font-size: 13px; line-height: 1.7;
+    color: var(--text-primary); margin-bottom: 8px;
+  }
+  .slide-text.muted { color: var(--text-secondary); font-size: 12px; }
+  .slide-text.small { font-size: 12px; }
+  .slide-text.center { text-align: center; }
+  .slide-text.right { text-align: right; }
+
+  /* ========== Data Display ========== */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; margin-bottom: 16px;
+  }
+  .kpi-card {
+    background: var(--bg-card2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px;
+    text-align: center;
+  }
+  .kpi-card .value {
+    font-size: 22px; font-weight: 800;
+    color: var(--text-primary);
+  }
+  .kpi-card .value.green { color: var(--green); }
+  .kpi-card .value.red { color: var(--red); }
+  .kpi-card .value.yellow { color: var(--yellow); }
+  .kpi-card .label {
+    font-size: 11px; color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ========== Data Table ========== */
+  .data-table {
+    width: 100%; border-collapse: collapse;
+    margin: 10px 0 14px; font-size: 12px;
+  }
+  .data-table thead th {
+    background: rgba(233,69,96,0.15);
+    color: var(--accent); font-weight: 700;
+    padding: 8px 6px; text-align: center;
+    border-bottom: 2px solid var(--accent);
+    font-size: 11px;
+  }
+  .data-table tbody td {
+    padding: 7px 6px; border-bottom: 1px solid var(--border);
+    text-align: center; color: var(--text-primary);
+    font-size: 12px;
+  }
+  .data-table tbody tr:nth-child(even) td {
+    background: rgba(255,255,255,0.03);
+  }
+  .data-table .green { color: var(--green) !important; }
+  .data-table .red { color: var(--red) !important; }
+  .data-table .left { text-align: left; }
+
+  /* ========== Tags ========== */
+  .tag {
+    display: inline-block; padding: 2px 10px;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+    margin: 2px;
+  }
+  .tag.bull { background: rgba(0,184,148,0.15); color: var(--green); }
+  .tag.bear { background: rgba(225,112,85,0.15); color: var(--red); }
+  .tag.neutral { background: rgba(253,203,110,0.15); color: var(--yellow); }
+  .tag.info { background: rgba(15,52,96,0.3); color: #74b9ff; }
+
+  /* ========== Sentiment Bar ========== */
+  .sentiment-bar {
+    display: flex; height: 20px; border-radius: 10px; overflow: hidden;
+    margin: 10px 0;
+  }
+  .sentiment-bar .up { background: var(--green); transition: width 0.5s; }
+  .sentiment-bar .down { background: var(--red); transition: width 0.5s; }
+  .sentiment-bar .flat { background: var(--text-muted); transition: width 0.5s; }
+  .sentiment-labels {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;
+  }
+
+  /* ========== Flow Indicator ========== */
+  .flow-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .flow-row .name { font-size: 13px; color: var(--text-primary); flex: 1; }
+  .flow-row .pct { font-size: 12px; font-weight: 700; min-width: 55px; text-align: right; }
+  .flow-row .flow { font-size: 12px; min-width: 80px; text-align: right; }
+  .flow-row .green { color: var(--green); }
+  .flow-row .red { color: var(--red); }
+
+  /* ========== Analysis Box ========== */
+  .analysis-box {
+    background: rgba(233,69,96,0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px; margin: 10px 0;
+  }
+  .analysis-box .title {
+    font-size: 12px; font-weight: 700; color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .analysis-box .content {
+    font-size: 13px; line-height: 1.6; color: var(--text-primary);
+  }
+
+  /* ========== Risk Box ========== */
+  .risk-box {
+    background: rgba(225,112,85,0.08);
+    border-left: 3px solid var(--red);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px; margin: 10px 0;
+  }
+  .risk-box .title {
+    font-size: 12px; font-weight: 700; color: var(--red);
+    margin-bottom: 4px;
+  }
+
+  /* ========== Cover Slide ========== */
+  .cover-slide {
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+  }
+  .cover-slide .main-title {
+    font-size: 26px; font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+  }
+  .cover-slide .sub-title {
+    font-size: 15px; color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .cover-slide .meta {
+    font-size: 12px; color: var(--text-muted);
+    line-height: 2;
+  }
+  .cover-slide .stamp {
+    margin-top: 20px;
+    padding: 8px 24px;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 4px;
+  }
+  .cover-slide .decor-line {
+    width: 60px; height: 3px;
+    background: var(--accent); margin: 12px auto;
+    border-radius: 2px;
+  }
+
+  /* ========== Scenario Cards ========== */
+  .scenario-card { border-radius: 12px; padding: 14px; margin: 10px 0; }
+  .scenario-card.optimistic { background: rgba(0,184,148,0.1); border: 1px solid var(--green); }
+  .scenario-card.baseline { background: rgba(253,203,110,0.1); border: 1px solid var(--yellow); }
+  .scenario-card.pessimistic { background: rgba(225,112,85,0.1); border: 1px solid var(--red); }
+  .scenario-card .label {
+    font-size: 13px; font-weight: 800; margin-bottom: 6px;
+  }
+  .scenario-card.optimistic .label { color: var(--green); }
+  .scenario-card.baseline .label { color: var(--yellow); }
+  .scenario-card.pessimistic .label { color: var(--red); }
+  .scenario-card .content { font-size: 12px; line-height: 1.6; color: var(--text-primary); }
+
+  /* ========== Bullet List ========== */
+  .bullet-list { list-style: none; padding: 0; }
+  .bullet-list li {
+    position: relative; padding: 5px 0 5px 16px;
+    font-size: 13px; line-height: 1.5; color: var(--text-primary);
+  }
+  .bullet-list li::before {
+    content: ''; position: absolute; left: 0; top: 12px;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .bullet-list li.green::before { background: var(--green); }
+  .bullet-list li.red::before { background: var(--red); }
+
+  /* ========== Nav Bar ========== */
+  .nav-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 50px; display: flex; align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(15,15,35,0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    background: none; border: none; color: var(--text-primary);
+    font-size: 28px; cursor: pointer; padding: 4px 16px;
+    line-height: 1; transition: opacity 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn:active { opacity: 0.5; }
+  .nav-btn:disabled { opacity: 0.2; cursor: default; }
+  .nav-dots {
+    display: flex; gap: 6px; align-items: center;
+    max-width: 60%; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all 0.3s; flex-shrink: 0;
+  }
+  .nav-dot.active {
+    background: var(--accent); width: 24px; border-radius: 4px;
+  }
+  .nav-dot:hover { background: var(--text-muted); }
+
+  /* ========== Footer ========== */
+  .slide-footer {
+    margin-top: 20px; padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 10px; color: var(--text-muted);
+    text-align: center; line-height: 1.6;
+  }
+
+  /* ========== Responsive ========== */
+  @media (min-width: 600px) {
+    .slide { padding: 60px 40px 80px; }
+    .slide-title { font-size: 24px; }
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+    .cover-slide .main-title { font-size: 34px; }
+    .data-table { font-size: 13px; }
+  }
+  @media (min-width: 900px) {
+    .slide { padding: 70px 60px 90px; max-width: 800px; margin: 0 auto; }
+  }
+
+  /* ========== Print ========== */
+  @media print {
+    .app { overflow: visible; background: white; }
+    .slides { display: block; transform: none !important; }
+    .slide { min-width: 100%; height: auto; padding: 20px; page-break-after: always; }
+    .nav-bar, .page-indicator { display: none; }
+    body { color: #333; }
+    .slide-title { color: #1a1a2e; }
+    .data-table tbody td { color: #333; }
+  }
+</style>
+</head>
+<body>
+<div id="app" class="app">
+  <div class="page-indicator" id="pageIndicator">
+    <span id="pageCurrent">1</span>/<span id="pageTotal">1</span>
+  </div>
+
+  <div class="slides" id="slidesContainer">
+    {SLIDES_CONTENT}
+  </div>
+
+  <div class="nav-bar" id="navBar">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>‹</button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">›</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const container = document.getElementById('slidesContainer');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const navDots = document.getElementById('navDots');
+  const pageCurrent = document.getElementById('pageCurrent');
+  const pageTotal = document.getElementById('pageTotal');
+  
+  let current = 0;
+  const total = slides.length;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let isSwiping = false;
+
+  pageTotal.textContent = total;
+
+  // Create dots
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = function() { goToPage(i); };
+    navDots.appendChild(dot);
+  }
+
+  function goToPage(index) {
+    if (index < 0) index = 0;
+    if (index >= total) index = total - 1;
+    if (current === index) return;
+    
+    current = index;
+    container.style.transform = 'translateX(-' + (current * 100) + '%)';
+    
+    // Update indicator
+    pageCurrent.textContent = current + 1;
+    
+    // Update buttons
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === total - 1;
+    
+    // Update dots
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.className = 'nav-dot' + (i === current ? ' active' : '');
+    });
+  }
+
+  window.prevPage = function() { goToPage(current - 1); };
+  window.nextPage = function() { goToPage(current + 1); };
+
+  // Touch events for swipe
+  container.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    isSwiping = false;
+  }, { passive: true });
+
+  container.addEventListener('touchmove', function(e) {
+    if (Math.abs(e.changedTouches[0].screenX - touchStartX) > 10) {
+      isSwiping = true;
+    }
+  }, { passive: true });
+
+  container.addEventListener('touchend', function(e) {
+    if (!isSwiping) return;
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goToPage(current + 1);
+      else goToPage(current - 1);
+    }
+  }, { passive: true });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault(); goToPage(current - 1);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault(); goToPage(current + 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault(); goToPage(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); goToPage(total - 1);
+    }
+  });
+})();
+</script>
+</body>
+</html>
