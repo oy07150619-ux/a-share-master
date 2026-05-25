@@ -231,8 +231,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="A股综合数据采集器")
     parser.add_argument("mode", nargs="?", default="all",
-                       choices=["all", "market", "sector", "flow", "tops", "stock", "news", "verify"],
-                       help="采集模式")
+                       help="采集模式 (all/market/sector/flow/tops/stock/news/verify; 别名: premarket/morning/closing/auction)")
     parser.add_argument("--code", help="股票代码 (stock模式)")
     parser.add_argument("--keyword", help="搜索关键词 (news模式)")
     parser.add_argument("--limit", type=int, default=20, help="数据数量")
@@ -240,6 +239,22 @@ if __name__ == "__main__":
     parser.add_argument("--output", help="输出到文件")
 
     args = parser.parse_args()
+    
+    # 模式别名映射: 盘前/早盘/收盘 → 有效模式
+    MODE_ALIASES = {
+        "premarket": "all",
+        "morning": "all",
+        "closing": "all",
+        "auction": "market",
+    }
+    if args.mode in MODE_ALIASES:
+        args.mode = MODE_ALIASES[args.mode]
+    
+    # 验证模式有效性
+    VALID_MODES = ["all", "market", "sector", "flow", "tops", "stock", "news", "verify"]
+    if args.mode not in VALID_MODES:
+        print(f"错误: 未知模式 '{args.mode}'，可用模式: {', '.join(VALID_MODES)}", file=sys.stderr)
+        sys.exit(1)
     start = time.time()
 
     if args.mode == "all":
