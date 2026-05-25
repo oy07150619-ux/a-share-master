@@ -29,7 +29,7 @@ description: |
   ```powershell
   iwr -useb https://openclaw.ai/install.ps1 | iex
   openclaw onboard --install-daemon
-  git clone https://github.com/oy07150619-ux/a-share-master.git $env:USERPROFILE\.openclaw\workspace\skills\a-share-master
+  git clone https://github.com/oy07150619-ux/a-share-master.git "$env:USERPROFILE\.openclaw\workspace\skills\a-share-master"
   ```
   
   📖 详细安装指南（含 Node.js/Git/Python 安装步骤）见文末**附录**
