@@ -33,6 +33,9 @@ description: |
   ```
   
   📖 详细安装指南（含 Node.js/Git/Python 安装步骤）见文末**附录**
+  
+  > 💡 OpenClaw 安装脚本会自动处理大部分依赖（如 Node.js），快速安装三步即可完成。
+  > 如果遇到依赖问题，或想`逐一手动安装`各组件，参考附录中的完整步骤。
 ---
 
 # A股综合分析技能 — a-share-master
@@ -879,7 +882,9 @@ python scripts/html_ppt.py --template templates/report_template.html --data data
 
 ### 一、Windows 用户完整安装流程
 
-Windows 用户请按以下**逐条执行**，可直接复制粘贴到 PowerShell（管理员）或 CMD。
+> ⚠️ **整个流程都请在 PowerShell（管理员）中执行**：右键开始菜单 → Windows PowerShell(管理员)
+
+Windows 用户请按以下**逐条复制粘贴执行**，每完成一步确认后再继续下一步。
 
 > 如果已经安装了 Node.js、Git、Python 中的某几项，可以跳过对应步骤。
 
@@ -888,7 +893,8 @@ Windows 用户请按以下**逐条执行**，可直接复制粘贴到 PowerShell
 # 第一步：安装 Node.js（OpenClaw 运行环境）
 # ============================================
 # 方法A：官网下载安装（推荐）
-#   打开 https://nodejs.org → 下载LTS版 → 双击安装（一路下一步）
+#   打开 https://nodejs.org → 下载LTS版 → 双击安装（一路下一步，无需改任何选项）
+#   装完后**重启 PowerShell**，再继续下面的步骤
 #
 # 方法B：用 winget 命令行安装
 winget install OpenJS.NodeJS.LTS
@@ -908,14 +914,16 @@ npm --version
 winget install Git.Git
 
 # 验证安装成功
- git --version
+git --version
 
 
 # ============================================
 # 第三步：安装 Python（数据分析脚本需要）
 # ============================================
 # 方法A：官网下载安装（推荐）
-#   打开 https://www.python.org/downloads/ → 下载 → 安装时**勾选 "Add Python to PATH"**
+#   打开 https://www.python.org/downloads/ → 下载最新版
+#   → 安装时**务必勾选 "Add Python to PATH"**（否则python命令无法识别）
+#   → 装完后**重启 PowerShell**
 #
 # 方法B：用 winget 命令行安装
 winget install Python.Python.3.13
@@ -924,28 +932,32 @@ winget install Python.Python.3.13
 python --version
 pip --version
 
-# 安装 requests 库（collector.py 需要）
+# 安装 requests 库（数据采集需要）
 pip install requests
 
 
 # ============================================
 # 第四步：安装 OpenClaw
 # ============================================
-# 以管理员身份运行 PowerShell，执行：
+git --version     # 确认 Git 已安装好
+
+# 执行 OpenClaw 一键安装脚本
 iwr -useb https://openclaw.ai/install.ps1 | iex
 
-# 初始化 OpenClaw（会创建 ~/.openclaw 目录）
+# 初始化（会创建 %USERPROFILE%\.openclaw 目录）
 openclaw onboard --install-daemon
 
 
 # ============================================
 # 第五步：安装市场分析工具 skill
 # ============================================
-git clone https://github.com/oy07150619-ux/a-share-master.git %USERPROFILE%\.openclaw\workspace\skills\a-share-master
+git clone https://github.com/oy07150619-ux/a-share-master.git "$env:USERPROFILE\.openclaw\workspace\skills\a-share-master"
 
-# 验证安装
-python %USERPROFILE%\.openclaw\workspace\skills\a-share-master\scripts\collector.py market
+# 验证安装——能看到A股数据输出即OK
+python "$env:USERPROFILE\.openclaw\workspace\skills\a-share-master\scripts\collector.py" market
 ```
+
+> ✅ 完成后，每天 9:00 / 9:25 / 10:00 / 15:00 你会自动收到 A 股市场分析报告。
 
 ---
 
