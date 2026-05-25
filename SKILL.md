@@ -13,6 +13,26 @@ description: |
   适用场景：每日盘前/盘后分析、集合竞价解读、午间资金研判、个股深度分析、板块轮动跟踪、市场情绪判断、重大事件前瞻
   
   触发：用户说"盘前分析""复盘""集合竞价""早盘""分析大盘""看看市场""资金流向""板块分析""个股深度分析"
+  
+  ## 🚀 快速安装
+  
+  **前置条件：** 安装 Node.js (≥18)、Git、Python (≥3.8)
+  
+  ### Linux / macOS
+  ```bash
+  curl -fsSL https://openclaw.ai/install.sh | bash
+  openclaw onboard --install-daemon
+  git clone https://github.com/oy07150619-ux/a-share-master.git ~/.openclaw/workspace/skills/a-share-master
+  ```
+  
+  ### Windows (PowerShell 管理员)
+  ```powershell
+  iwr -useb https://openclaw.ai/install.ps1 | iex
+  openclaw onboard --install-daemon
+  git clone https://github.com/oy07150619-ux/a-share-master.git $env:USERPROFILE\.openclaw\workspace\skills\a-share-master
+  ```
+  
+  📖 详细安装指南（含 Node.js/Git/Python 安装步骤）见文末**附录**
 ---
 
 # A股综合分析技能 — a-share-master
@@ -855,64 +875,174 @@ python scripts/html_ppt.py --template templates/report_template.html --data data
 
 ---
 
-## ⚙️ 附录：跨平台安装与依赖
+## ⚙️ 附录：完整安装指南（Windows / macOS / Linux）
 
-### 系统需求
-| 系统 | 支持情况 | 说明 |
-|------|---------|------|
-| **Linux** (Ubuntu/Debian) | ✅ 原生支持 | 推荐，开箱即用 |
-| **macOS** | ✅ 原生支持 | 需安装Homebrew + Python3 |
-| **Windows** | ✅ 通过WSL2 | 最佳体验，也可用原生Python |
-| **Windows (原生)** | ✅ 支持 | 命令用 `python` 而非 `python3` |
+### 一、Windows 用户完整安装流程
 
-### 一键安装（从GitHub）
+Windows 用户请按以下**逐条执行**，可直接复制粘贴到 PowerShell（管理员）或 CMD。
 
-克隆仓库到 OpenClaw skill 目录：
+> 如果已经安装了 Node.js、Git、Python 中的某几项，可以跳过对应步骤。
+
+```powershell
+# ============================================
+# 第一步：安装 Node.js（OpenClaw 运行环境）
+# ============================================
+# 方法A：官网下载安装（推荐）
+#   打开 https://nodejs.org → 下载LTS版 → 双击安装（一路下一步）
+#
+# 方法B：用 winget 命令行安装
+winget install OpenJS.NodeJS.LTS
+
+# 验证安装成功（能看到版本号即OK）
+node --version
+npm --version
+
+
+# ============================================
+# 第二步：安装 Git（下载 skill 仓库用）
+# ============================================
+# 方法A：官网下载安装（推荐）
+#   打开 https://git-scm.com/download/win → 下载 → 双击安装（一路下一步）
+#
+# 方法B：用 winget 命令行安装
+winget install Git.Git
+
+# 验证安装成功
+ git --version
+
+
+# ============================================
+# 第三步：安装 Python（数据分析脚本需要）
+# ============================================
+# 方法A：官网下载安装（推荐）
+#   打开 https://www.python.org/downloads/ → 下载 → 安装时**勾选 "Add Python to PATH"**
+#
+# 方法B：用 winget 命令行安装
+winget install Python.Python.3.13
+
+# 验证安装成功
+python --version
+pip --version
+
+# 安装 requests 库（collector.py 需要）
+pip install requests
+
+
+# ============================================
+# 第四步：安装 OpenClaw
+# ============================================
+# 以管理员身份运行 PowerShell，执行：
+iwr -useb https://openclaw.ai/install.ps1 | iex
+
+# 初始化 OpenClaw（会创建 ~/.openclaw 目录）
+openclaw onboard --install-daemon
+
+
+# ============================================
+# 第五步：安装市场分析工具 skill
+# ============================================
+git clone https://github.com/oy07150619-ux/a-share-master.git %USERPROFILE%\.openclaw\workspace\skills\a-share-master
+
+# 验证安装
+python %USERPROFILE%\.openclaw\workspace\skills\a-share-master\scripts\collector.py market
+```
+
+---
+
+### 二、macOS 用户安装流程
+
 ```bash
+# 1. 安装 Homebrew（如果还没有）
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 2. 安装 Node.js
+brew install node
+
+# 3. 安装 Python
+brew install python
+pip3 install requests
+
+# 4. 安装 Git（macOS 通常自带，验证一下）
+git --version
+
+# 5. 安装 OpenClaw
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+# 6. 初始化
+openclaw onboard --install-daemon
+
+# 7. 安装市场分析工具 skill
 git clone https://github.com/oy07150619-ux/a-share-master.git ~/.openclaw/workspace/skills/a-share-master
 ```
-> 如果还没有安装 OpenClaw，先执行一键安装：
-> - **Linux/macOS**: `curl -fsSL https://openclaw.ai/install.sh | bash`
-> - **Windows (PowerShell)**: `iwr -useb https://openclaw.ai/install.ps1 | iex`
-> - 然后 `openclaw onboard --install-daemon` 完成初始化
 
-### 系统需求
-| 系统 | 支持情况 | 说明 |
-|------|---------|------|
-| **Linux** (Ubuntu/Debian) | ✅ 原生支持 | 推荐，开箱即用 |
-| **macOS** | ✅ 原生支持 | 需安装Homebrew + Python3 |
-| **Windows** | ✅ 通过WSL2 | 最佳体验，也可用原生Python |
-| **Windows (原生)** | ✅ 支持 | 命令用 `python` 而非 `python3` |
+---
 
-### 依赖安装
-本工具仅使用Python标准库，**无需额外pip包**。
-所有依赖（json、sys、os、subprocess等）均为Python 3内置模块。
+### 三、Linux 用户安装流程
 
-### 跨平台注意事项
+```bash
+# 1. 安装 Node.js
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs git python3 python3-pip
+pip3 install requests
+
+# 2. 安装 OpenClaw
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+# 3. 初始化
+openclaw onboard --install-daemon
+
+# 4. 安装市场分析工具 skill
+git clone https://github.com/oy07150619-ux/a-share-master.git ~/.openclaw/workspace/skills/a-share-master
+```
+
+---
+
+### 四、验证安装（全部平台通用）
+
+```bash
+# 查看 Python 版本
+python --version
+
+# 测试数据采集（能看到数据输出即OK）
+python scripts/collector.py market
+
+# 测试邮件发送（使用 QQ 邮箱，修改为你的邮箱）
+echo "测试报告" | python tools/email_report.py "测试报告"
+```
+
+### 五、设置定时报告（可选）
+
+安装完成后，在 OpenClaw 中配置以下 4 个定时任务即可自动接收每日报告：
+- **盘前分析**：工作日 9:00
+- **集合竞价**：工作日 9:25
+- **早盘分析**：工作日 10:00
+- **收盘复盘**：工作日 15:00
+
+详细配置命令见 `SKILL.md` 第九章（定时任务配置）。
+
+---
+
+### 六、依赖说明
+
+| 组件 | 用途 | 安装方式 |
+|------|------|---------|
+| Node.js (≥18) | OpenClaw 运行环境 | nodejs.org 或 winget/brew/apt |
+| Git | 下载 skill 代码 | git-scm.com 或 winget/brew/apt |
+| Python (≥3.8) | 数据分析脚本 | python.org 或 winget/brew/apt |
+| requests (pip包) | 数据采集 | `pip install requests` |
+| QQ邮箱授权码 | 发送邮件 | 开启QQ邮箱SMTP服务获取 |
+
+### 七、跨平台注意事项
 
 | 项目 | Linux | macOS | Windows |
 |------|-------|-------|---------|
-| Python命令 | `python` 或 `python3` | `python` 或 `python3` | 只能用 `python` |
+| Python命令 | `python3` 或 `python` | `python3` 或 `python` | 只能用 `python` |
 | 路径分隔符 | `/` | `/` | `\\`（脚本自动适配）|
-| `~` 用户目录 | `~` = `/home/用户名` | `~` = `/Users/用户名` | `~` = `C:\\Users\\用户名` |
-| 包管理器 | `apt` (Debian/Ubuntu) | `brew` (Homebrew) | `winget` / `choco` |
-| shebang | `#!/usr/bin/env python3` ✅ | `#!/usr/bin/env python3` ✅ | 不支持（需手动指定解释器）|
+| 用户目录 `~` | `/home/用户名` | `/Users/用户名` | `C:\\Users\\用户名` |
+| OpenClaw安装 | `curl ... install.sh` | `curl ... install.sh` | `iwr ... install.ps1` |
 
-> **核心优化：** 所有脚本内部使用 `sys.executable` 替代硬编码的 `python3`，
-> 因此无论在哪个平台，脚本间的子进程调用都会自动使用当前运行的Python解释器，
-> 无需手动配置。
-
-### 验证安装
-```bash
-# 查看Python版本
-python --version
-
-# 测试数据采集
-python scripts/collector.py market
-
-# 测试报告生成
-python scripts/html_ppt.py --type replay --text "测试"
-```
+> 所有脚本内部使用 `sys.executable` 替代硬编码的 `python3`，
+> 因此无论在哪个平台，脚本调用都会自动使用当前运行的Python解释器，无需手动配置。
 
 ---
 
