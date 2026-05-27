@@ -2,12 +2,27 @@
   "meta": {
     "created": "2026-05-25T18:38:04.038262",
     "version": "2.0",
-    "last_updated": "2026-05-25T18:38:04.038297",
-    "total_days_recorded": 0,
+    "last_updated": "2026-05-27T16:11:36.423161",
+    "total_days_recorded": 1,
     "total_signals_recorded": 0,
     "total_outcomes_recorded": 0
   },
-  "daily_snapshots": {},
+  "daily_snapshots": {
+    "2026-05-27": {
+      "recorded_at": "2026-05-27T16:11:36.423150",
+      "date": "2026-05-27",
+      "data": {
+        "indexes": [],
+        "sentiment": {},
+        "volume": 0,
+        "top_sectors": [],
+        "top_gainers": [],
+        "top_losers": [],
+        "big_flow_stocks": [],
+        "market_state": "neutral"
+      }
+    }
+  },
   "signals": {},
   "patterns": {
     "sector_flow_continuity": [],
