@@ -128,6 +128,131 @@ def collect_stock(code):
     return {"error": "not_found", "code": code}
 
 
+def collect_stock_flow(code):
+    """采集个股资金流向数据（尝试多数据源）
+
+    优先顺序：
+    1. AKShare stock_individual_fund_flow（如果可用）
+    2. 东方财富push2 API（备用）
+    3. 返回空数据（如果都不可用，不报错）
+
+    返回：
+    {
+        "代码": code,
+        "主力净流入": float,  # 亿
+        "特大单净流入": float,  # 亿
+        "大单净流入": float,  # 亿
+        "中单净流入": float,  # 亿
+        "小单净流入": float,  # 亿
+        "来源": "akshare/东方财富API/暂无数据",
+        "采集时间": str
+    }
+    或 {"error": str, "code": code}
+    """
+    import requests
+
+    ts = datetime.now().isoformat()
+    market = "1" if code.startswith("6") else "0"
+
+    # --- 尝试1: AKShare ---
+    try:
+        import akshare as ak
+        df = ak.stock_individual_fund_flow(stock=code, market=market)
+        if df is not None and not df.empty:
+            # 取最新一行
+            last = df.iloc[-1]
+            # AKShare返回的列名可能有变体，尝试匹配
+            main_net = None
+            for col in ["主力净流入-净额", "主力净流入", "净流入", "main_net_inflow"]:
+                if col in df.columns:
+                    main_net = float(last[col])
+                    break
+            mega_net = None
+            for col in ["特大单净流入-净额", "特大单净流入", "mega_order_net"]:
+                if col in df.columns:
+                    mega_net = float(last[col])
+                    break
+            large_net = None
+            for col in ["大单净流入-净额", "大单净流入", "large_order_net"]:
+                if col in df.columns:
+                    large_net = float(last[col])
+                    break
+            mid_net = None
+            for col in ["中单净流入-净额", "中单净流入", "medium_order_net"]:
+                if col in df.columns:
+                    mid_net = float(last[col])
+                    break
+            small_net = None
+            for col in ["小单净流入-净额", "小单净流入", "small_order_net"]:
+                if col in df.columns:
+                    small_net = float(last[col])
+                    break
+
+            # 至少需要主力净流入
+            if main_net is not None:
+                return {
+                    "代码": code,
+                    "主力净流入": round(main_net / 1e8, 4),
+                    "特大单净流入": round(mega_net / 1e8, 4) if mega_net is not None else 0,
+                    "大单净流入": round(large_net / 1e8, 4) if large_net is not None else 0,
+                    "中单净流入": round(mid_net / 1e8, 4) if mid_net is not None else 0,
+                    "小单净流入": round(small_net / 1e8, 4) if small_net is not None else 0,
+                    "来源": "akshare",
+                    "采集时间": ts
+                }
+    except ImportError:
+        pass  # akshare未安装
+    except Exception:
+        pass  # AKShare其他错误，降级
+
+    # --- 尝试2: 东方财富push2 API ---
+    try:
+        url = (
+            f"https://push2.eastmoney.com/api/qt/stock/fflow/daykline/get"
+            f"?secid={market}.{code}"
+            f"&fields1=f1,f2,f3,f7"
+            f"&fields2=f51,f52,f53,f54,f55,f56"
+        )
+        r = requests.get(url, headers=HEADERS, timeout=10)
+        data = r.json()
+        klines = data.get("data", {}).get("klines", [])
+        if klines:
+            # 取最新一条
+            last_line = klines[-1]
+            parts = last_line.split(",")
+            # f51=日期, f52=主力, f53=特大单, f54=大单, f55=中单, f56=小单
+            if len(parts) >= 6:
+                main_net = float(parts[1]) if parts[1] else 0
+                mega_net = float(parts[2]) if parts[2] else 0
+                large_net = float(parts[3]) if parts[3] else 0
+                mid_net = float(parts[4]) if parts[4] else 0
+                small_net = float(parts[5]) if parts[5] else 0
+                return {
+                    "代码": code,
+                    "主力净流入": round(main_net / 1e8, 4),
+                    "特大单净流入": round(mega_net / 1e8, 4),
+                    "大单净流入": round(large_net / 1e8, 4),
+                    "中单净流入": round(mid_net / 1e8, 4),
+                    "小单净流入": round(small_net / 1e8, 4),
+                    "来源": "东方财富API",
+                    "采集时间": ts
+                }
+    except Exception:
+        pass
+
+    # --- 都不可用，返回空数据 ---
+    return {
+        "代码": code,
+        "主力净流入": 0,
+        "特大单净流入": 0,
+        "大单净流入": 0,
+        "中单净流入": 0,
+        "小单净流入": 0,
+        "来源": "暂无数据",
+        "采集时间": ts
+    }
+
+
 def collect_all():
     """采集全部数据"""
     result = {
@@ -178,6 +303,66 @@ def verify():
     
     result["timestamp"] = datetime.now().isoformat()
     return result
+
+
+# ========================================================================
+# 函数: 计算炸板率 (v4.0)
+# ========================================================================
+
+def calc_limit_board_rate(total_limit_up, broken_limit_count):
+    """
+    计算炸板率（打开涨停比例）。
+
+    Parameters:
+        total_limit_up (int): 总涨停家数
+        broken_limit_count (int): 炸板家数（涨停后打开）
+
+    Returns:
+        dict: {
+            'rate': float or None,
+            'level': 'low' | 'medium' | 'high' | 'unknown',
+            'note': str or None
+        }
+    """
+    if total_limit_up is None or broken_limit_count is None:
+        return {
+            'rate': None,
+            'level': 'unknown',
+            'note': '数据源不支持炸板率计算'
+        }
+
+    try:
+        total_limit_up = int(total_limit_up)
+        broken_limit_count = int(broken_limit_count)
+    except (ValueError, TypeError):
+        return {
+            'rate': None,
+            'level': 'unknown',
+            'note': '数据源不支持炸板率计算'
+        }
+
+    if total_limit_up <= 0:
+        return {
+            'rate': 0.0,
+            'level': 'low',
+            'note': '无涨停数据'
+        }
+
+    rate = broken_limit_count / total_limit_up * 100
+    rate = round(rate, 2)
+
+    if rate < 20:
+        level = 'low'
+    elif rate <= 40:
+        level = 'medium'
+    else:
+        level = 'high'
+
+    return {
+        'rate': rate,
+        'level': level,
+        'note': None
+    }
 
 
 def format_output(data, mode="text"):

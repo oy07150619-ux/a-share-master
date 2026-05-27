@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "created": "2026-05-25T18:38:04.038262",
+    "version": "2.0",
+    "last_updated": "2026-05-25T18:38:04.038297",
+    "total_days_recorded": 0,
+    "total_signals_recorded": 0,
+    "total_outcomes_recorded": 0
+  },
+  "daily_snapshots": {},
+  "signals": {},
+  "patterns": {
+    "sector_flow_continuity": [],
+    "limit_up_density": [],
+    "index_correlation": [],
+    "learned_rules": []
+  },
+  "strategy_stats": {
+    "by_signal_type": {},
+    "by_sector": {},
+    "by_market_state": {}
+  }
+}

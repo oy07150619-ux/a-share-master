@@ -1,0 +1,39 @@
+v4.0 代码层修复完成
+====================
+时间: 2026-05-26 20:49 (GMT+8)
+
+### 改动详情
+
+#### 改动1: verifier.py ✅
+- 新增 check_index_name_consistency(report_text) — 指数名称一致性检查
+- 新增 check_typo(report_text) — 常见错别字检查
+- 新增 final_report_check(report_text) — 报告最终综合扫描
+- 增强 check_intra_report_consistency() — 新增资金口径标注检查
+
+#### 改动2: analysis_engine.py ✅
+- 新增 scan_sector_gainers(sector_data, threshold=5.0) — 板块涨幅扫描
+
+#### 改动3: collector.py ✅
+- 新增 calc_limit_board_rate(total_limit_up, broken_limit_count) — 炸板率计算
+
+#### 改动4: html_ppt.py ✅
+- 免责声明去重逻辑 — 检测并移除正文重复免责声明，仅保留footer
+
+#### 改动5: test_v4_fixes.py ✅
+- 42项测试全部通过（通过率 100%）
+
+### 测试覆盖
+| 测试组 | 用例数 | 状态 |
+|--------|--------|------|
+| check_index_name_consistency | 9 | ✅ |
+| check_typo | 8 | ✅ |
+| final_report_check | 8 | ✅ |
+| scan_sector_gainers | 6 | ✅ |
+| calc_limit_board_rate | 10 | ✅ |
+
+### 文件清单
+- scripts/verifier.py — 2处编辑（新增3函数+增强1函数）
+- scripts/analysis_engine.py — 1处编辑（新增1函数）
+- scripts/collector.py — 1处编辑（新增1函数）
+- scripts/html_ppt.py — 1处编辑（免责声明去重）
+- scripts/test_v4_fixes.py — 新建

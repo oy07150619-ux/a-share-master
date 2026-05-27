@@ -1,0 +1,40 @@
+复盘报告v3代码层修复 — 完成记录
+=====================================
+完成时间: 2026-05-26 20:22 CST
+测试结果: 32/32 全部通过 (100%)
+
+改动摘要
+--------
+
+### 1. analysis_engine.py (+2 个函数)
+
+**classify_market_divergence(up_ratio, limit_up, limit_down, index_changed)**
+- 判断市场极端撕裂行情（铁律6）
+- 返回值: {verdict, level, reason}
+- 5种判定: extreme_divergence / fake_recovery / normal_bull / normal_bear / normal
+- level: high / medium / none
+
+**check_volume_qualitative(volume_change_pct, index_change_pct)**
+- 校验量能定性一致性（铁律7）
+- 返回值: {expected, check_passed, verify_rule}
+- 5种定性: 放量上涨/放量下跌/缩量上涨/缩量下跌/量平价升跌
+- 内置 epsilon=0.05 阈值判断量持平时段
+
+### 2. verifier.py (+2 个函数)
+
+**check_intra_report_consistency(report_text)**
+- 同一报告内数据矛盾检测（铁律8）
+- 正则匹配数字+单位组合 → 实体归一化提取 → 同主体不同值检测
+- 实体归一化: 动词切割(流入/流出) + 前缀去除(实际/今日) + 截尾取4字
+- 返回值: {pass, warnings: [{field, values, positions}]}
+
+**check_close_position(close_price, support, resist)**
+- 收盘价在支撑压力区间定位（铁律9）
+- 比率法: (close - support) / (resist - support)
+- 3档: upper_third(≥2/3) / middle_third / lower_third(≤1/3)
+- 返回值: {position, ratio, suggestion}
+- 防异常: ratio截断[0,1], 支撑>压力返回异常提示
+
+### 3. test_v3_fixes.py (新创建)
+- 覆盖4个功能 × 共32个测试用例
+- 含边界条件: 29.9%涨跌比边界、2/3位置边界、0值量能、空文本、支撑压力反转

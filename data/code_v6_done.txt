@@ -1,0 +1,24 @@
+v6 fix completed at 2026-05-26T21:34 CST
+========================================
+
+改动概要：
+1. collector.py → 新增 collect_stock_flow(code) 函数
+   - 优先尝试AKShare stock_individual_fund_flow
+   - 回退使用东方财富push2 API
+   - 均不可用时返回全零数据（不崩溃）
+   - 返回格式：代码、主力/特大单/大单/中单/小单净流入（亿）、来源、采集时间
+
+2. analysis_engine.py → 新增 validate_stock_fund_flow(stock_info) 函数
+   - 维度1：主力净流入绝对值 ≤ 成交额×40%（数值异常→issue→fail）
+   - 维度2：涨跌幅>5%+净流出 或 涨跌幅<-3%+净流入 → 资金背离标记（warning）
+   - 维度3：主力净流入绝对值 ≤ 流通市值×8%（量级异常→issue→fail）
+   - 返回pass/confidence/issues/warnings
+
+3. test_v6_fixes.py → 7组测试用例全部通过 ✅
+   - Test1: collect_stock_flow 已知代码（600519茅台, 000001平安）— 格式验证通过
+   - Test2: collect_stock_flow 无效代码 — 不崩溃，返回空数据
+   - Test3: validate_stock_fund_flow 正常场景 — pass=True, confidence=high
+   - Test4: validate_stock_fund_flow 资金背离 — 正确识别并标记warning
+   - Test5: validate_stock_fund_flow 量级超限 — 正确识别issue并failing
+   - Test6: validate_stock_fund_flow 边界场景 — 0值/None/缺失/字符串均不崩溃
+   - Test7: 模拟通富微电事故场景 — 涨8.2%但净流出22.46亿 → 资金背离标记 ✅

@@ -1,0 +1,35 @@
+{
+  "last_updated": "2026-05-26T10:16:06.136315",
+  "snapshots": {
+    "morning": {
+      "report_type": "morning",
+      "timestamp": "2026-05-26T10:16:06.136227",
+      "data_scope": "申万一级",
+      "key_indicators": {
+        "sh_index": 3350.12,
+        "sci50_index": 1020.56,
+        "limit_up_count": 25,
+        "sector_top3": [
+          {
+            "name": "半导体",
+            "flow": 1500000000,
+            "pct": 3.5,
+            "scope": "申万一级"
+          },
+          {
+            "name": "人工智能",
+            "flow": 800000000,
+            "pct": 2.8,
+            "scope": "申万一级"
+          },
+          {
+            "name": "新能源",
+            "flow": 500000000,
+            "pct": 2.1,
+            "scope": "申万一级"
+          }
+        ]
+      }
+    }
+  }
+}

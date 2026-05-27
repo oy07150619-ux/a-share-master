@@ -1,0 +1,84 @@
+================================================================================
+  A股早盘报告 V2 代码修复 — 完成报告
+  生成时间: 2026-05-26 10:15 CST
+================================================================================
+
+✅ 全部6项改动 + 测试验证通过
+
+--------------------------------------------------------------------------------
+改动1: analysis_engine.py — 新增3个函数
+--------------------------------------------------------------------------------
+  [完成] save_report_snapshot(report_type, data, data_scope='')
+    - 保存快照到 memory/report_snapshot.json
+    - 包含: sh_index, sci50_index, limit_up_count, sector_top3
+
+  [完成] check_cross_report_consistency(new_data, snapshot_data, report_type='morning')
+    - 上证指数>1% → warning
+    - 涨停数变化>0 → warning
+    - 板块TOP3资金>20% → warning
+    - 返回: {warnings, passes, changed_fields}
+
+  [完成] check_sector_concentration(sector_pct, sector_flow, sector_name='')
+    - <1亿 + >3% → high warning
+    - <3亿 + >5% → medium warning
+    - 其他 → none
+
+  同时修复: 顶部新增 import os
+
+--------------------------------------------------------------------------------
+改动2: verifier.py — 新增3个函数
+--------------------------------------------------------------------------------
+  [完成] check_data_source(report_text)
+    - 白名单(16个) + 黑名单(9个)
+    - 支持 【】（）() 三种括号格式
+    - 返回: {pass, warnings}
+
+  [完成] cross_report_validate(current_report, snapshot_path)
+    - 对比快照中的指数指标
+    - 返回: {pass, warnings, suggestions}
+
+  [完成] check_html_syntax(html_content)
+    - 检查 table/tr/td/th/div 标签闭合
+    - 返回: {pass, errors}
+
+--------------------------------------------------------------------------------
+改动3: html_ppt.py — 早盘样式修复
+--------------------------------------------------------------------------------
+  [完成] 新增 _add_morning_prefix(slides) 函数
+    - slide-title → morning-section-title
+    - slide-text → morning-slide-text
+    - slide-subtitle → morning-slide-subtitle
+    - slide-footer → morning-slide-footer
+    - data-table → morning-table
+    - 支持复合类名 (如 class="slide-text small")
+
+  [完成] generate() 增加 morning 类型处理
+    - 调用 _add_morning_prefix() 添加前缀
+    - 追加 <div class='morning-footer-gap'></div>
+
+--------------------------------------------------------------------------------
+改动4: report_template.html — 新增早盘专用CSS
+--------------------------------------------------------------------------------
+  [完成] 在 /* Print */ 前插入 Morning 专用样式
+    - .morning-table (含 th/td/even)
+    - .morning-section-title
+    - .morning-footer-gap
+
+--------------------------------------------------------------------------------
+改动5: memory/ 目录和快照文件
+--------------------------------------------------------------------------------
+  [完成] 创建 memory/report_snapshot.json
+    {"last_updated": null, "snapshots": {}}
+
+--------------------------------------------------------------------------------
+改动6: 测试验证脚本
+--------------------------------------------------------------------------------
+  [完成] scripts/test_v2_fixes.py — 7项测试全部通过
+    1. save_report_snapshot             ✅ 通过
+    2. check_cross_report_consistency   ✅ 通过 (一致/不一致/无历史)
+    3. check_sector_concentration       ✅ 通过 (high/medium/none/None)
+    4. check_data_source                ✅ 通过 (白/黑/未知/混合/无来源)
+    5. check_html_syntax                ✅ 通过 (正确/未闭合table/tr/td/复杂)
+    6. morning CSS 存在性检查           ✅ 通过
+    7. html_ppt morning 前缀替换        ✅ 通过
+================================================================================

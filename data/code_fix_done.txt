@@ -1,0 +1,45 @@
+集合竞价报告代码修复 — 完成
+================================
+
+执行时间: 2026-05-26 09:52
+执行者: 🅲 小C（程序员）
+
+## 已完成改动
+
+### 1. 创建 analysis_engine.py ✅
+- 路径: scripts/analysis_engine.py
+- 功能: 封装了5个分析函数:
+  - classify_limit_status: 涨停/跌停7分类（封板/触板/接近涨停/正常/接近跌停/触板/封板跌停）
+  - calc_volume_divergence: 量能分化指数（extremely_bullish/bullish/balanced/bearish/extremely_bearish）
+  - calc_support_resistance: 支撑压力位计算（含ATR、核心区间、合理性检查）
+  - signal_weight_matrix: 情绪信号权重矩阵（7个信号加权，含二元对立处理）
+  - detect_risks: 风险条件检测（7种检测条件，含格式化警告输出）
+
+### 2. 修改 report_template.html ✅
+- 路径: templates/report_template.html
+- 新增CSS样式:
+  - .news-item / .news-source / .news-tag: 结构化新闻列表
+  - .tag-sealed / .tag-touched / .tag-near: 涨停分类标签
+  - .warning-box: 警告框样式
+
+### 3. 修改 html_ppt.py ✅
+- 路径: scripts/html_ppt.py
+- 新增函数:
+  - _tag_limit(): 涨停分类标签生成
+  - _news_item(): 结构化新闻条目
+  - _warning_box(): 警告框
+  - _generate_auction_slides(): 竞价报告幻灯片（9页：封面/竞价总览/涨幅榜/跌幅榜/量能分析/情绪判断/支撑压力/风险提示/盘前资讯）
+- generate() 函数中新增 auction 类型路由
+
+### 4. 修改 stock_data.py ✅
+- 路径: tools/stock_data.py
+- _is_limit_up/_is_limit_down: 增加竞价阶段兼容（价格推导涨跌幅）
+- batch_query: 增加成交额字段（腾讯API字段37）解析为浮点数
+
+### 5. 创建测试脚本 ✅
+- 路径: scripts/test_analysis_engine.py
+- 75项测试全部通过
+
+## 测试结果
+- ✅ 全部 75 项测试通过
+- 涵盖: 所有5个函数单元测试 + 边界条件 + html_ppt集成测试 + stock_data集成测试

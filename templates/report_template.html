@@ -295,6 +295,53 @@
   }
   .nav-dot:hover { background: var(--text-muted); }
 
+  /* ========== News Items ========== */
+  .news-item {
+    display: flex;
+    gap: 6px; padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 12px; line-height: 1.6;
+  }
+  .news-item .news-source {
+    flex-shrink: 0; padding: 0 6px;
+    background: rgba(233,69,96,0.12); border-radius: 3px;
+    color: var(--accent); font-size: 11px;
+    font-weight: 600; white-space: nowrap;
+  }
+  .news-item .news-tag {
+    flex-shrink: 0; padding: 0 5px;
+    background: rgba(15,52,96,0.3); border-radius: 3px;
+    color: #74b9ff; font-size: 10px; white-space: nowrap;
+  }
+
+  /* ========== Limit Status Tags ========== */
+  .tag-sealed {
+    display: inline-block; padding: 1px 8px; border-radius: 3px;
+    background: rgba(225,112,85,0.3); color: var(--red);
+    font-size: 11px; font-weight: 700; margin: 0 2px;
+  }
+  .tag-touched {
+    display: inline-block; padding: 1px 8px; border-radius: 3px;
+    background: rgba(233,69,96,0.15); color: var(--accent);
+    font-size: 11px; font-weight: 600; margin: 0 2px;
+  }
+  .tag-near {
+    display: inline-block; padding: 1px 8px; border-radius: 3px;
+    background: rgba(253,203,110,0.15); color: var(--yellow);
+    font-size: 11px; font-weight: 600; margin: 0 2px;
+  }
+
+  /* ========== Warning Box ========== */
+  .warning-box {
+    background: rgba(225,112,85,0.08);
+    border: 1px solid var(--red); border-radius: 8px;
+    padding: 10px 14px; margin: 8px 0;
+  }
+  .warning-box .title {
+    font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 4px;
+  }
+  .warning-box .content { font-size: 12px; line-height: 1.6; color: var(--text-primary); }
+
   /* ========== Footer ========== */
   .slide-footer {
     margin-top: 20px; padding-top: 12px;
@@ -314,6 +361,36 @@
   @media (min-width: 900px) {
     .slide { padding: 70px 60px 90px; max-width: 800px; margin: 0 auto; }
   }
+
+  /* ========== Morning (早盘) 专用样式 ========== */
+  .morning-table {
+    width: 100%; border-collapse: collapse;
+    table-layout: fixed; font-size: 11px;
+  }
+  .morning-table th {
+    background: rgba(233,69,96,0.3); font-weight: 700;
+    padding: 6px 8px; text-align: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    position: sticky; top: 0; z-index: 2;
+    font-size: 11px; line-height: 1.5;
+  }
+  .morning-table td {
+    padding: 6px 8px; text-align: center;
+    border: 1px solid rgba(255,255,255,0.15);
+    font-size: 11px; line-height: 1.5;
+    word-break: break-all; white-space: normal;
+  }
+  .morning-table tr:nth-child(even) td {
+    background: rgba(255,255,255,0.03);
+  }
+  .morning-section-title {
+    font-size: 15px; font-weight: 700;
+    margin: 16px 0 8px 0;
+    padding: 6px 12px;
+    background: linear-gradient(90deg, rgba(233,69,96,0.25), transparent);
+    border-left: 3px solid var(--accent);
+  }
+  .morning-footer-gap { height: 24px; }
 
   /* ========== Print ========== */
   @media print {
