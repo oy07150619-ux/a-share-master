@@ -1,56 +1,36 @@
-# 🚀 A股市场分析工具 v2.5 - 一键安装脚本 (Windows PowerShell)
-# 用法: 以管理员身份运行 PowerShell，执行:
-#   iex (iwr -useb https://raw.githubusercontent.com/oy07150619-ux/a-share-master/main/install.ps1)
+# 🚀 安装 A股市场分析工具 v3.0
+# Windows PowerShell (管理员运行)
+# 用法:
+#   iwr -useb https://openclaw.ai/install.ps1 | iex
+#   git clone https://github.com/oy07150619-ux/a-share-master.git ~/.openclaw/workspace/skills/a-share-master
+#   pip install akshare requests
 
-$ErrorActionPreference = "Stop"
-$REPO = "https://github.com/oy07150619-ux/a-share-master.git"
-$SKILL_DIR = "$env:USERPROFILE\.openclaw\workspace\skills\a-share-master"
-$TOOLS_DIR = "$env:USERPROFILE\.openclaw\workspace\tools"
-
-Write-Host "==============================================" -ForegroundColor Cyan
-Write-Host "  📊 A股市场分析工具 v2.5 头部券商级" -ForegroundColor Cyan
-Write-Host "==============================================" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  安装 A股市场分析工具 v3.0" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# 1. 检查OpenClaw
+# 第1步: 安装 OpenClaw (如已安装可跳过)
 if (-not (Get-Command openclaw -ErrorAction SilentlyContinue)) {
-    Write-Host "⚠️  未检测到OpenClaw，请先安装:" -ForegroundColor Yellow
-    Write-Host "   iwr -useb https://openclaw.ai/install.ps1 | iex" -ForegroundColor White
-    exit 1
+    Write-Host "▶ 第1步: 安装 OpenClaw" -ForegroundColor Yellow
+    iex (iwr -useb https://openclaw.ai/install.ps1).Content
+    openclaw onboard --install-daemon
+} else {
+    Write-Host "✅ OpenClaw 已安装" -ForegroundColor Green
 }
 
-# 2. 创建工作目录
-Write-Host "📁 创建工作目录..." -ForegroundColor Green
-New-Item -ItemType Directory -Path "$env:USERPROFILE\.openclaw\workspace" -Force | Out-Null
+# 第2步: 安装市场分析工具 skill
+Write-Host "`n▶ 第2步: 安装市场分析工具 skill" -ForegroundColor Yellow
+$SKILL_DIR = "$env:USERPROFILE\.openclaw\workspace\skills\a-share-master"
 if (Test-Path $SKILL_DIR) {
-    Write-Host "   ⚠️  检测到已存在，先备份旧版本..." -ForegroundColor Yellow
-    mv $SKILL_DIR "$SKILL_DIR.bak.$(Get-Date -Format 'yyyyMMddHHmmss')" -Force
+    Remove-Item $SKILL_DIR -Recurse -Force
 }
+git clone https://github.com/oy07150619-ux/a-share-master.git $SKILL_DIR
 
-# 3. 克隆技能
-Write-Host "📦 下载技能包..." -ForegroundColor Green
-git clone $REPO $SKILL_DIR 2>&1 | Out-Null
+# 第3步: 安装 Python 依赖
+Write-Host "`n▶ 第3步: 安装 Python 依赖" -ForegroundColor Yellow
+pip install akshare requests --quiet
 
-# 4. 复制tools依赖
-Write-Host "🔧 安装工具依赖..." -ForegroundColor Green
-New-Item -ItemType Directory -Path $TOOLS_DIR -Force | Out-Null
-Copy-Item "$SKILL_DIR\tools\*.py" $TOOLS_DIR -Force
-
-# 5. 安装Python依赖
-Write-Host "🐍 安装Python包..." -ForegroundColor Green
-pip install akshare requests --quiet 2>&1 | Out-Null
-
-# 6. 配置邮箱（需要用户手动修改）
-Write-Host ""
-Write-Host "✅ v2.5 头部券商级 安装完成!" -ForegroundColor Green
-Write-Host ""
-Write-Host "📌 下一步：配置邮箱发送" -ForegroundColor Yellow
-Write-Host "   编辑 $SKILL_DIR\..\..\..\tools\email_report.py" -ForegroundColor White
-Write-Host "   修改 TO_EMAIL 为你自己的邮箱地址" -ForegroundColor White
-Write-Host ""
-Write-Host "📌 然后配置定时任务（每天自动发送报告）：" -ForegroundColor Yellow
-Write-Host "   打开OpenClaw TUI 或 使用 openclaw cron 命令" -ForegroundColor White
-Write-Host "   参考 $SKILL_DIR\SKILL.md 中的配置说明" -ForegroundColor White
-Write-Host ""
-Write-Host "📌 数据采集验证：" -ForegroundColor Yellow
-Write-Host "   python $SKILL_DIR\scripts\collector.py all" -ForegroundColor White
+Write-Host "`n✅ 安装完成!" -ForegroundColor Green
+Write-Host "📧 编辑 $SKILL_DIR\..\..\..\tools\email_report.py 修改 TO_EMAIL" -ForegroundColor Yellow
+Write-Host "⏰ 参考 SKILL.md 配置定时任务" -ForegroundColor Yellow
