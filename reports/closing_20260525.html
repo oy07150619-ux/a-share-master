@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>📊 A股深度复盘 2026-05-25</title>
+<style>
+  body { font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif; background: #0c1426; color: #e0e6f0; max-width: 900px; margin: 0 auto; padding: 20px; }
+  .header { background: linear-gradient(135deg, #1a2744 0%, #162140 100%); border-radius: 16px; padding: 30px; margin-bottom: 24px; border: 1px solid #2a3f66; }
+  .header h1 { margin: 0 0 6px; font-size: 28px; color: #f0c040; }
+  .header .date { color: #8892a8; font-size: 14px; margin-bottom: 10px; }
+  .header .market-status { display: inline-block; background: #00c853; color: #fff; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  .card { background: #1a2744; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid #2a3f66; }
+  .card h2 { font-size: 18px; color: #f0c040; margin: 0 0 16px; border-bottom: 1px solid #2a3f66; padding-bottom: 10px; }
+  .index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .index-item { background: #0f1a30; border-radius: 10px; padding: 16px; text-align: center; border: 1px solid #25385a; }
+  .index-item .name { font-size: 13px; color: #8892a8; }
+  .index-item .value { font-size: 24px; font-weight: bold; margin: 4px 0; }
+  .index-item .change { font-size: 14px; }
+  .up { color: #ff4757; }
+  .down { color: #2ed573; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: #25385a; color: #aab4cc; padding: 8px 10px; text-align: left; }
+  td { padding: 8px 10px; border-bottom: 1px solid #25385a; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+  .tag-hot { background: #ff4757; color: #fff; }
+  .tag-cool { background: #2ed573; color: #fff; }
+  .highlight-box { background: #0f1a30; border-left: 3px solid #f0c040; padding: 12px 16px; margin: 10px 0; border-radius: 0 8px 8px 0; }
+  .event-item { padding: 8px 0; border-bottom: 1px solid #1e3150; }
+  .event-item:last-child { border-bottom: none; }
+  .risk-high { color: #ff6b81; }
+  .risk-mid { color: #ffa502; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📊 A股深度收盘复盘</h1>
+  <div class="date">2026年5月25日（星期一）</div>
+  <span class="market-status">今日开市 ✅</span>
+  <span style="margin-left: 10px; color: #8892a8; font-size: 13px;">数据来源：东方财富 | 同花顺 | 证券时报 | 21财经 | 财联社</span>
+</div>
+
+<div class="card">
+  <h2>📈 大盘指数一览</h2>
+  <div class="index-grid">
+    <div class="index-item">
+      <div class="name">上证指数</div>
+      <div class="value up">4152.57</div>
+      <div class="change up">+39.67 (+0.96%)</div>
+      <div class="name">成交额 1.45万亿</div>
+    </div>
+    <div class="index-item">
+      <div class="name">深证成指</div>
+      <div class="value up">15856.61</div>
+      <div class="change up">+259.31 (+1.66%)</div>
+      <div class="name">成交额 1.76万亿</div>
+    </div>
+    <div class="index-item">
+      <div class="name">创业板指</div>
+      <div class="value up">4021.16</div>
+      <div class="change up">+82.66 (+2.10%)</div>
+      <div class="name">成交额 8840亿</div>
+    </div>
+    <div class="index-item">
+      <div class="name">科创50</div>
+      <div class="value up">1896.04</div>
+      <div class="change up">+105.27 (+5.88%)</div>
+      <div class="name">成交额 2220亿</div>
+    </div>
+    <div class="index-item">
+      <div class="name">沪深300</div>
+      <div class="value up">4921.60</div>
+      <div class="change up">+76.50 (+1.58%)</div>
+      <div class="name">成交额 8612亿</div>
+    </div>
+    <div class="index-item">
+      <div class="name">北证50</div>
+      <div class="value down">1316.74</div>
+      <div class="change down">-10.52 (-0.79%)</div>
+      <div class="name">成交额 215亿</div>
+    </div>
+  </div>
+  <div style="margin-top: 12px; text-align: center; color: #8892a8; font-size: 13px;">
+    沪深两市合计成交约 <strong style="color: #f0c040;">3.21万亿元</strong> · 科创综指 +3.52% · 中证全指 +1.24%
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔬 行业板块表现（半日数据）</h2>
+  <div class="highlight-box">
+    <strong>涨幅前三：</strong>
+    <span class="tag tag-hot">电子 +3.08%</span>
+    <span class="tag tag-hot">煤炭 +1.63%</span>
+    <span class="tag tag-hot">公用事业 +1.55%</span>
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    <strong>跌幅前三：</strong>
+    <span class="tag tag-cool">综合 -2.84%</span>
+    <span class="tag tag-cool">石油石化 -1.97%</span>
+    <span class="tag tag-cool">基础化工 -1.42%</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>行业</th><th>涨跌幅</th><th>成交额(亿)</th><th>领涨股</th></tr>
+      <tr><td>电子</td><td class="up">+3.08%</td><td>6,758</td><td>容大感光 +20.01%</td></tr>
+      <tr><td>煤炭</td><td class="up">+1.63%</td><td>140</td><td>盘江股份 +10.10%</td></tr>
+      <tr><td>公用事业</td><td class="up">+1.55%</td><td>537</td><td>华电能源 +10.02%</td></tr>
+      <tr><td>通信</td><td class="up">+1.50%</td><td>1,471</td><td>蘅东光 +14.69%</td></tr>
+      <tr><td>建筑材料</td><td class="up">+1.45%</td><td>271</td><td>长海股份 +20.02%</td></tr>
+      <tr><td>食品饮料</td><td class="up">+0.49%</td><td>232</td><td>莲花控股 +10.04%</td></tr>
+      <tr><td>电力设备</td><td class="down">-0.82%</td><td>2,018</td><td>通灵股份 -13.11%</td></tr>
+      <tr><td>石油石化</td><td class="down">-1.97%</td><td>117</td><td>潜能恒信 -11.10%</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔥 概念题材热度</h2>
+  <div class="highlight-box">
+    <strong>🔥 领涨方向</strong><br>
+    ✅ <strong>芯片产业链集体爆发</strong> — 科创芯片指数 +7.08%，国证芯片 +7.41%，存储芯片 +6.93%<br>
+    ✅ <strong>科创50飙升近6%创历史新高</strong> — 半导体设备、科创芯片股反复走强<br>
+    ✅ <strong>存储芯片概念持续活跃</strong> — 东芯股份20cm涨停，商络电子20cm涨停，华虹公司涨超16%<br>
+    ✅ <strong>先进封装概念强势</strong> — 鸿仕达+17.12%，盛美上海+15.47%（续创历史新高）<br>
+    ✅ <strong>MLCC板块大涨</strong> — 双星新材、博杰股份、风华高科涨停<br>
+    ✅ <strong>培育钻石概念涨幅居前</strong> — 黄河旋风+10.01%，博云新材+10.01%<br>
+    ✅ <strong>PCB概念延续强势</strong> — 鹏鼎控股2连板续创历史新高<br>
+    ✅ <strong>数据中心电源概念活跃</strong> — 麦格米特涨停<br>
+    ✅ <strong>电力板块震荡拉升</strong> — 京能电力9天6板<br><br>
+    <strong>❄️ 领跌方向</strong><br>
+    ❌ 油气股震荡调整 — 潜能恒信 -11.10%<br>
+    ❌ 体育产业股下挫 — 三人行跌停，中体产业跌超8%<br>
+    ❌ 赛马/可燃冰概念走弱
+  </div>
+</div>
+
+<div class="card">
+  <h2>💰 资金与热点个股</h2>
+  <div class="highlight-box">
+    <strong>成交额排名（半日）：</strong><br>
+    · 兆易创新 206.99亿元居首（+6.95%）<br>
+    · 寒武纪成交额达200亿元（+8.32%，续创历史新高）<br>
+    · 澜起科技成交额超200亿元（+4.32%）<br>
+    · 新易盛股价创历史新高<br>
+    · 中芯国际涨超10%<br>
+    · 中韩半导体ETF(513310)成交额居ETF榜首
+  </div>
+</div>
+
+<div class="card">
+  <h2>📰 今日重要事件</h2>
+  <div class="event-item"><strong>🔹 半导体景气持续</strong> — 英伟达Rubin机柜生态圈持续发酵，MLCC、PCB、存储缺货涨价，纬颖董事长坦言存储产品最为紧缺，"客户每天都在问有没有存储产品"。</div>
+  <div class="event-item"><strong>🔹 特斯拉FSD进入中国</strong> — 特斯拉FSD Supervised正式进入中国内地市场，交银国际认为将推动L3量产落地，智能驾驶产业链迎重要验证窗口。</div>
+  <div class="event-item"><strong>🔹 广东战新引导基金启动</strong> — 首期注册规模500亿元，总规模将达1000亿元，为广东首支永续经营公司制省级政府投资基金。</div>
+  <div class="event-item"><strong>🔹 人形机器人产业加速</strong> — 蓝点触控完成C++轮数亿融资；帕西尼完成韩国上市公司人形机器人批量订单交付。2026年以来具身智能领域融资总额超345亿元。</div>
+  <div class="event-item"><strong>🔹 美伊协议接近达成</strong> — 特朗普称美伊协议基本谈成，内容包括开放霍尔木兹海峡，油价预期下行利好成本端。</div>
+  <div class="event-item"><strong>🔹 上海深圳顶豪"日光"</strong> — 深圳中信信悦湾77套总价5150万起大平层开盘半小时售罄，观潮府加推40套直接售罄。</div>
+</div>
+
+<div class="card">
+  <h2>🔄 上周（5/18-5/22）回顾 vs 今日对比</h2>
+  <div class="highlight-box">
+    <strong>上周五（5/22）收盘：</strong> 上证 4112.90 (+0.87%)，深证 15597.30 (+2.30%)，创业板 3938.50 (+2.84%)，成交额 2.90万亿<br>
+    <strong>今日（5/25）收盘：</strong> 上证 4152.57 (+0.96%)，深证 15856.61 (+1.66%)，创业板 4021.16 (+2.10%)，成交额 3.21万亿<br><br>
+    <strong>📌 今日分析：</strong>
+    · 上证成功站上4150点，较上周五+39.67点，午后放量拉升，显示多头动能恢复
+    · 创业板指重返4000点上方，距离历史新高4038点仅一步之遥
+    · 科创50大涨5.88%领跑全场，半导体全面爆发成为最强引擎
+    · 成交额较上周五放量约3100亿至3.21万亿，增量资金明显入场
+    · 上周521大跌（-2.04%）的调整基本修复，市场情绪显著回暖
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔮 后市展望</h2>
+  <div class="highlight-box">
+    <strong>短期研判：</strong><br>
+    ✅ 科技成长主线延续 — 半导体/AI算力/存储芯片/PCB热度不减，资金集中度创新高<br>
+    ⚠️ 注意高位震荡风险 — 科创50单日+5.88%，短期涨幅过大存在技术回调压力<br>
+    ✅ 量能配合良好 — 3.21万亿成交额显示增量资金入场信号积极<br>
+    ⚠️ 关注北向资金动向 — 沪深港通今日休市，明日恢复后资金态度值得关注<br><br>
+    <strong>策略参考：</strong><br>
+    · 科技主线：关注半导体设备、存储芯片、PCB、数据中心电源四大高景气方向<br>
+    · 防御配置：煤炭、电力等顺周期板块今日表现稳健<br>
+    · 风险提示：石油石化、体育产业等走弱板块短期回避，美伊协议若落地或利空能源股
+  </div>
+</div>
+
+<div class="card">
+  <h2>⚡ 风险提示</h2>
+  <div class="risk-high">⚠️ 市场有风险，投资需谨慎。本报告仅为市场复盘参考，不构成任何投资建议。</div>
+  <div style="color: #8892a8; font-size: 12px; margin-top: 8px;">
+    报告生成时间：2026-05-25 15:00 · 数据来源：东方财富、证券时报、21财经、财联社、同花顺
+  </div>
+</div>
+
+</body>
+</html>

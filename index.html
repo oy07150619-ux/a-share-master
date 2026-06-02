@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A股市场分析工具 — 专业级报告门户</title>
+  <style>
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1a2332;
+      --accent: #f0c040;
+      --accent-dim: #c8a030;
+      --text: #e0e6f0;
+      --text-dim: #8892a8;
+      --border: #1e293b;
+      --red: #ff4757;
+      --green: #2ed573;
+      --blue: #4a9eff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      background: linear-gradient(135deg, #0f1a30 0%, #162140 50%, #0c1426 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 20px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(240,192,64,0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 50%, rgba(74,158,255,0.03) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(240,192,64,0.15);
+      color: var(--accent);
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 1px solid rgba(240,192,64,0.2);
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f0c040 0%, #ff8c42 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .hero p { font-size: 18px; color: var(--text-dim); line-height: 1.6; max-width: 600px; margin: 0 auto 8px; }
+    .hero .sub {
+      font-size: 14px;
+      color: #5a6a8a;
+      margin-top: 12px;
+    }
+
+    /* ─── Stats Bar ─── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 24px 20px;
+      background: rgba(17,24,39,0.8);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 28px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+    /* ─── Container ─── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+
+    /* ─── Section Title ─── */
+    .section-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ─── Filter Tabs ─── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); color: #0a0e1a; border-color: var(--accent); font-weight: 600; }
+
+    /* ─── Report Grid ─── */
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .report-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .report-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(240,192,64,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+    .report-card .type-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .type-premarket .type-tag { background: rgba(74,158,255,0.15); color: #4a9eff; }
+    .type-auction .type-tag { background: rgba(240,192,64,0.15); color: #f0c040; }
+    .type-morning .type-tag { background: rgba(46,213,115,0.15); color: #2ed573; }
+    .type-closing .type-tag { background: rgba(255,71,87,0.15); color: #ff4757; }
+
+    .report-card .date {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .report-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .report-card .desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .report-card .format-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 11px;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.05);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* ─── Features Section ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .feature-card .icon { font-size: 32px; margin-bottom: 12px; }
+    .feature-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ─── Empty State ─── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-dim);
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state p { font-size: 16px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
+      .stats-bar { gap: 20px; }
+      .stat-num { font-size: 22px; }
+      .report-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ Hero ═══ -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">📊 AI 驱动 · 机构级 · 多源核验</div>
+    <h1>A股市场分析工具</h1>
+    <p>覆盖盘前、集合竞价、早盘资金、收盘复盘的四大时段深度报告</p>
+    <p class="sub">数据来源：东方财富 · 同花顺 · 腾讯财经 · Reuters · Bloomberg · 上交所 · 深交所</p>
+  </div>
+</header>
+
+<!-- ═══ Stats ═══ -->
+<div class="stats-bar" id="statsBar">
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports">0</div>
+    <div class="stat-label">总报告数</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports_0">0</div>
+    <div class="stat-label">盘前分析</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports_1">0</div>
+    <div class="stat-label">集合竞价</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports_2">0</div>
+    <div class="stat-label">早盘资金</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports_3">0</div>
+    <div class="stat-label">收盘复盘</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="totalReports_4">0</div>
+    <div class="stat-label">交易日覆盖</div>
+  </div>
+</div>
+
+<!-- ═══ Reports ═══ -->
+<div class="container">
+  <div class="section-title">
+    报告归档
+    <span class="line"></span>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">📋 全部</button>
+    <button class="filter-btn" data-filter="premarket">🔮 盘前</button>
+    <button class="filter-btn" data-filter="auction">🏐 集合竞价</button>
+    <button class="filter-btn" data-filter="morning">🔥 早盘资金</button>
+    <button class="filter-btn" data-filter="closing">📊 收盘复盘</button>
+  </div>
+
+  <div class="report-grid" id="reportGrid"></div>
+</div>
+
+<!-- ═══ Features ═══ -->
+<div class="container">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="icon">🧠</div>
+      <h4>AI 深度分析</h4>
+      <p>基于 DeepSeek 大模型的多维度市场解读，情绪量化、资金拆解、风险预警</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🔍</div>
+      <h4>多源数据核验</h4>
+      <p>数据经过东方财富、同花顺、腾讯财经多平台交叉验证，杜绝单一信息源偏差</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📅</div>
+      <h4>四时段全覆盖</h4>
+      <p>盘前→集合竞价→早盘→收盘，贯穿全天交易节奏，每个关键节点都有研判</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">🛡️</div>
+      <h4>铁律核验系统</h4>
+      <p>前置闸门、QA审查、后置校验、反幻觉核验四道防线确保数据准确性</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">💼</div>
+      <h4>机构级标准</h4>
+      <p>资金行为拆解、风险量化、跨市场联动、产业深度、历史规律对比、可执行策略</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">📬</div>
+      <h4>定时推送</h4>
+      <p>每日报告自动生成并通过邮件发送到指定邮箱，不错过任何重要研判节点</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>A股市场分析工具 · AI 驱动 · 数据仅供参考，不构成投资建议</p>
+  <p style="margin-top:4px; font-size:12px;">© 2026 · Powered by OpenClaw</p>
+</footer>
+
+<script>
+// ─── Report Data ───
+const REPORTS = [
+  { file: 'closing_20260525.html', type: 'closing', date: '2026-05-25', title: 'A股深度收盘复盘', desc: '五日线支撑有效，量能萎缩至万亿下，情绪从恐慌到修复的转化路径清晰。', format: 'HTML' },
+  { file: 'auction_report_20260528.html', type: 'auction', date: '2026-05-28', title: '集合竞价深度解读', desc: '四大指数全线低开，科创50跌幅最大（-0.57%），竞价情绪偏弱但未恐慌。', format: 'HTML' },
+  { file: 'report_0527.txt', type: 'closing', date: '2026-05-27', title: '收盘复盘报告', desc: 'A股三大指数震荡调整，市场情绪降温，板块轮动加速。', format: 'TXT' },
+  { file: 'a股复盘报告_2026-05-21.pdf', type: 'closing', date: '2026-05-21', title: 'A股复盘报告', desc: 'A股三大指数震荡调整，市场情绪降温。', format: 'PDF' },
+  { file: 'a股深度复盘_2026-05-22.pdf', type: 'closing', date: '2026-05-22', title: 'A股深度复盘', desc: '日线级别趋势分析，量价关系与资金流向深度解读。', format: 'PDF' },
+  { file: 'a股复盘报告_2026-05-22.pdf', type: 'closing', date: '2026-05-22', title: 'A股复盘报告', desc: 'A股三大指数震荡调整，市场情绪降温。', format: 'PDF' },
+];
+
+const TYPE_MAP = {
+  premarket: { label: '🔮 盘前分析', style: 'type-premarket' },
+  auction:   { label: '🏐 集合竞价', style: 'type-auction' },
+  morning:   { label: '🔥 早盘资金', style: 'type-morning' },
+  closing:   { label: '📊 收盘复盘', style: 'type-closing' },
+};
+
+// ─── Render ───
+function renderReports(filter = 'all') {
+  const grid = document.getElementById('reportGrid');
+  const filtered = filter === 'all' ? REPORTS : REPORTS.filter(r => r.type === filter);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>暂无此类报告</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(r => {
+    const info = TYPE_MAP[r.type] || { label: '📄 报告', style: '' };
+    const ext = r.file.split('.').pop().toLowerCase();
+    const href = ext === 'html' || ext === 'txt' ? `reports/${r.file}` : `reports/${r.file}`;
+    return `
+      <div class="report-card ${info.style}" onclick="window.open('${href}', '_blank')">
+        <span class="type-tag">${info.label}</span>
+        <span class="format-badge">${r.format}</span>
+        <div class="date">${r.date}</div>
+        <h3>${r.title}</h3>
+        <div class="desc">${r.desc}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── Stats ───
+function updateStats() {
+  const total = REPORTS.length;
+  const pre = REPORTS.filter(r => r.type === 'premarket').length;
+  const auc = REPORTS.filter(r => r.type === 'auction').length;
+  const mor = REPORTS.filter(r => r.type === 'morning').length;
+  const clo = REPORTS.filter(r => r.type === 'closing').length;
+  const days = new Set(REPORTS.map(r => r.date)).size;
+
+  document.getElementById('totalReports').textContent = total;
+  document.getElementById('totalReports_0').textContent = pre;
+  document.getElementById('totalReports_1').textContent = auc;
+  document.getElementById('totalReports_2').textContent = mor;
+  document.getElementById('totalReports_3').textContent = clo;
+  document.getElementById('totalReports_4').textContent = days;
+}
+
+// ─── Filter Buttons ───
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderReports(btn.dataset.filter);
+  });
+});
+
+// ─── Init ───
+updateStats();
+renderReports('all');
+</script>
+
+</body>
+</html>
